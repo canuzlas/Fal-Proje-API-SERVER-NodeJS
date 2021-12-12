@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const path = require('path')
 const session = require('express-session')
 require('dotenv').config()
 require('./src/config/db')
@@ -13,12 +14,13 @@ app.use(session({
    saveUninitialized: true,
    cookie: {
       maxAge: (1000 * 60 * 100)
-   } 
+   }
 }))
+app.use(express.static(path.resolve(__dirname,'./src/uploads/usersPhoto')))
 
 app.use(
    express.urlencoded({
-      extended: true
+      extended: false
    })
 )
 app.use(express.json())
