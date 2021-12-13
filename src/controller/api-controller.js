@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken')
 const usersModel = require('../models/users-model')
+const coffeeFalModel = require('../models/coffeeFalPhotos')
 const md5 = require('md5')
+const fs = require('fs')
+const path = require('path')
 
 
 const apiJwt = async (req, res) => {
@@ -10,8 +13,8 @@ const apiJwt = async (req, res) => {
 
 }
 const signUp = async (req, res) => {
-   const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
    try {
+      const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
       if (result.device == req.body.device) {
          const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
          await user.save()
@@ -105,7 +108,6 @@ const updateProfile = async (req, res) => {
          break;
    }
 }
-
 const updatePhoto = async (req, res) => {
    try {
       if (req.query.verify == 'true') {
@@ -121,12 +123,12 @@ const updatePhoto = async (req, res) => {
          if (req.file) {
             const updatedUser = await usersModel.findByIdAndUpdate(req.session.u_id, { photo: req.file.filename })
             if (updatedUser) {
+               updatedUser.photo != 'false' ? fs.unlink(path.resolve(__dirname, '../uploads/usersPhoto/' + updatedUser.photo), (err) => err ? console.log(err) : console.log('fotoğraf silindi')) : null
                const user = await usersModel.findById(updatedUser._id)
                return res.send({ success: true, data: user })
             } else {
                return res.send({ success: false })
             }
-            console.log(updatedUser)
          } else {
             return res.send({ success: false })
          }
@@ -134,9 +136,56 @@ const updatePhoto = async (req, res) => {
    } catch (error) {
       return res.send({ success: false })
    }
-
 }
-
+const updatePhotoForCoffeeFal = async (req, res) => {
+   try {
+      if (req.query.verify == 'true') {
+         const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
+         if (result.device == req.body.device) {
+            req.session.u_id = req.body.u_id
+            return res.send({ success: true })
+         } else {
+            return res.send({ success: false })
+         }
+      }
+      if (req.query.savePhoto == 'true') {
+         if (req.files) {
+            const photos = new Array()
+            const resultsPhotos = req.files
+            resultsPhotos.forEach(photo => {
+               photos.push(photo.filename)
+            });
+            const data = await new coffeeFalModel({ u_id: req.session.u_id, photos: photos })
+            await data.save()
+            if (data) {
+               return res.send({ success: true })
+            } else {
+               return res.send({ success: false })
+            }
+         } else {
+            return res.send({ success: false })
+         }
+      }
+   } catch (error) {
+      return res.send({ success: false })
+   }
+}
+const getAllFall = async (req, res) => {
+   try {
+      const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
+      if (result.device == req.body.device) {
+         console.log(req.body.u_id)
+         const fals = await coffeeFalModel.find({u_id:req.body.u_id})
+         console.log(fals)
+         return res.send({ data: fals, success: true })
+      } else {
+         return res.send({ success: false })
+      }
+   } catch (error) {
+      console.log(error)
+      return res.send({ success: false })
+   }
+}
 
 module.exports = {
    apiJwt,
@@ -144,5 +193,7 @@ module.exports = {
    checkEmailİsUsable,
    login,
    updateProfile,
-   updatePhoto
+   updatePhoto,
+   updatePhotoForCoffeeFal,
+   getAllFall
 }

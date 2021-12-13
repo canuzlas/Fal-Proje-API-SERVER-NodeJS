@@ -9,5 +9,8 @@ router.post('/register', apiController.signUp)
 router.post('/login', apiController.login)
 router.post('/updateProfile', apiController.updateProfile)
 router.post('/updatePhoto', multer.userMulter.single('file'), apiController.updatePhoto)
+router.post('/coffeeFal', multer.coffeeFalMulter.array('files', 3), apiController.updatePhotoForCoffeeFal)
+router.post('/getAllFall', apiController.getAllFall)
+
 
 module.exports = router
