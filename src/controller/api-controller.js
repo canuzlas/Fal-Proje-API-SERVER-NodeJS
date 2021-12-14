@@ -175,7 +175,7 @@ const getAllFall = async (req, res) => {
       const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
       if (result.device == req.body.device) {
          console.log(req.body.u_id)
-         const fals = await coffeeFalModel.find({u_id:req.body.u_id})
+         const fals = await coffeeFalModel.find({u_id:req.body.u_id}).sort({createdAt:'-1'}).limit(10)
          console.log(fals)
          return res.send({ data: fals, success: true })
       } else {
