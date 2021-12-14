@@ -16,7 +16,7 @@ app.use(session({
       maxAge: (1000 * 60 * 100)
    }
 }))
-app.use(express.static(path.resolve(__dirname,'./src/uploads/usersPhoto')))
+app.use(express.static(path.resolve(__dirname, './src/uploads/usersPhoto')))
 
 app.use(
    express.urlencoded({
@@ -27,4 +27,4 @@ app.use(express.json())
 app.use('/api', apiRouter)
 
 
-app.listen(3000, () => { console.log('3000 portu dinlemede') })
+app.listen(process.env.PORT || 3000, () => { console.log('3000 portu dinlemede') })
