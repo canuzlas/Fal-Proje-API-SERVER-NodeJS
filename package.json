@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm install nodemon ./app.js",
-    "web": "npm start"
+    "web": "npm start" 
   },
   "keywords": [],
   "author": "",
