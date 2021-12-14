@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm install nodemon ./app.js",
+    "start": "node ./app.js",
     "web": "npm start" 
   },
   "keywords": [],
