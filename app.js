@@ -6,6 +6,7 @@ require('dotenv').config()
 require('./src/config/db')
 
 const apiRouter = require('./src/router/api-router')
+const frontRouter = require('./src/router/front-router')
 
 app.use(session({
    name: 'falhub.com',
@@ -17,6 +18,7 @@ app.use(session({
    }
 }))
 app.use(express.static(path.resolve(__dirname, './src/uploads/usersPhoto')))
+app.use(express.static(path.resolve(__dirname, './src/assets')))
 
 app.use(
    express.urlencoded({
@@ -24,7 +26,8 @@ app.use(
    })
 )
 app.use(express.json())
-app.use('/api', apiRouter)
 
+app.use('/api', apiRouter)
+app.use('/', frontRouter)
 
 app.listen(process.env.PORT || 3000, () => { console.log(process.env.PORT+' dinleniyor') })
