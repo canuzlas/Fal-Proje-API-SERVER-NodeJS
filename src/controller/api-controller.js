@@ -42,8 +42,10 @@ const login = async (req, res) => {
             if (result.device == req.body.device) {
                const pass = await md5(req.body.password)
                const result = await usersModel.find({ mail: req.body.mail, pass: pass })
+
                if (result.length) {
-                  res.send({ data: result, success: true })
+                  const count = await coffeeFalModel.count({ u_id: result.map(user => user._id) })
+                  res.send({ data: result, coffeeCount: count, success: true })
                } else {
                   res.send({ success: false })
                }
@@ -175,7 +177,7 @@ const getAllFall = async (req, res) => {
       const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
       if (result.device == req.body.device) {
          console.log(req.body.u_id)
-         const fals = await coffeeFalModel.find({u_id:req.body.u_id}).sort({createdAt:'-1'}).limit(10)
+         const fals = await coffeeFalModel.find({ u_id: req.body.u_id }).sort({ createdAt: '-1' }).limit(10)
          console.log(fals)
          return res.send({ data: fals, success: true })
       } else {

@@ -27,4 +27,4 @@ app.use(express.json())
 app.use('/api', apiRouter)
 
 
-app.listen(process.env.PORT || 3000, () => { console.log('3000 portu dinlemede') })
+app.listen(process.env.PORT || 3000, () => { console.log(process.env.PORT+' dinleniyor') })
