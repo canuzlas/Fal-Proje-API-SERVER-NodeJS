@@ -18,7 +18,7 @@ const signUp = async (req, res) => {
       if (result.device == req.body.device) {
          const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
          await user.save()
-         return res.send({ data: user, success: true })
+         return res.send({ data: user, success: true, coffeeCount: 0 })
       } else {
          return res.send({ success: false })
       }
@@ -56,6 +56,28 @@ const login = async (req, res) => {
             res.send({ success: "error" })
          }
          break;
+      case "google":
+         try {
+            console.log(req.body.token)
+            console.log(req.body.device)
+            console.log(req.body.mail)
+            const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
+            if (result.device == req.body.device) {
+               const result = await usersModel.find({ mail: req.body.mail })
+               if (result.length) {
+                  const count = await coffeeFalModel.count({ u_id: result.map(user => user._id) })
+                  res.send({ data: result, coffeeCount: count, success: true })
+               } else {
+                  res.send({ success: false })
+               }
+            } else {
+               res.send({ success: "error" })
+            }
+         } catch (error) {
+            res.send({ success: "error" })
+         }
+         break;
+
    }
 }
 const updateProfile = async (req, res) => {

@@ -6,7 +6,7 @@ const usersSchema = new Schema({
     mail: { type: String, min: 8, max: 60, trim: true },
     pass: { type: String, min: 8, max: 32, trim: true },
     photo: { type: String, default: false }
-})
+}, { timestamps: true })
 
 const usersModel = mongoose.model("user", usersSchema)
 
