@@ -14,6 +14,11 @@ router.get('/commitfal', middleWares.adminCheck, adminController.commitFalPage)
 router.get('/commitfor', middleWares.adminCheck, adminController.commitThisFal)
 router.get('/yorumlananfallar', middleWares.adminCheck, adminController.yorumlananfallarPage)
 router.post('/addcommit', middleWares.adminCheck, adminController.addCommitThisFal)
+//notification
+router.post('/sendNotification', middleWares.adminCheck, adminController.sendNotification)
+router.post('/deleteNotification', middleWares.adminCheck, adminController.deleteNotification)
+router.get('/allnotification', middleWares.adminCheck, adminController.allNotification)
+
 
 
 module.exports = router

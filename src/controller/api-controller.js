@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const usersModel = require('../models/users-model')
 const coffeeFalModel = require('../models/coffeeFalPhotos')
+const appNotificationModel = require('../models/app-notifications-model')
 const md5 = require('md5')
 const fs = require('fs')
 const path = require('path')
@@ -14,24 +15,58 @@ const apiJwt = async (req, res) => {
 }
 const signUp = async (req, res) => {
    try {
-      const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
-      if (result.device == req.body.device) {
-         const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
-         await user.save()
-         return res.send({ data: user, success: true, coffeeCount: 0 })
+      if (req.query.method == 'google') {
+         console.log('google')
+         if (req.body.verifyCode == req.session.verifyCode && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
+            const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
+            if (result.device == req.body.device) {
+               const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
+               await user.save()
+               return res.send({ data: user, success: true, coffeeCount: 0 })
+            } else {
+               return res.send({ success: false })
+            }
+         } else {
+            return res.send({ success: false })
+         }
       } else {
-         return res.send({ success: false })
+         console.log('google else')
+         const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
+         if (result.device == req.body.device) {
+            const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
+            await user.save()
+            return res.send({ data: user, success: true, coffeeCount: 0 })
+         } else {
+            return res.send({ success: false })
+         }
       }
    } catch (error) {
+      console.log('google error')
       return res.send({ success: false })
    }
 }
 const checkEmailİsUsable = async (req, res) => {
    const result = await usersModel.find({ mail: req.body.mail })
    if (result.length) {
-      return res.send({ success: false })
+      if (req.query.forgoogle == 'true' && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
+
+         req.session.verifyCode = req.body.verifyCode
+
+         return res.send({ success: false, verifyCode: req.session.verifyCode })
+      } else {
+
+         return res.send({ success: false })
+      }
    } else {
-      return res.send({ success: true })
+      if (req.query.forgoogle == 'true' && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
+
+         req.session.verifyCode = req.body.verifyCode
+
+         return res.send({ success: true, verifyCode: req.session.verifyCode })
+      } else {
+
+         return res.send({ success: true })
+      }
    }
 }
 const login = async (req, res) => {
@@ -58,17 +93,18 @@ const login = async (req, res) => {
          break;
       case "google":
          try {
-            console.log(req.body.token)
-            console.log(req.body.device)
-            console.log(req.body.mail)
-            const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
-            if (result.device == req.body.device) {
-               const result = await usersModel.find({ mail: req.body.mail })
-               if (result.length) {
-                  const count = await coffeeFalModel.count({ u_id: result.map(user => user._id) })
-                  res.send({ data: result, coffeeCount: count, success: true })
+            if (req.body.verifyCode == req.session.verifyCode && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
+               const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
+               if (result.device == req.body.device) {
+                  const result = await usersModel.find({ mail: req.body.mail })
+                  if (result.length) {
+                     const count = await coffeeFalModel.count({ u_id: result.map(user => user._id) })
+                     res.send({ data: result, coffeeCount: count, success: true })
+                  } else {
+                     res.send({ success: false })
+                  }
                } else {
-                  res.send({ success: false })
+                  res.send({ success: "error" })
                }
             } else {
                res.send({ success: "error" })
@@ -77,7 +113,6 @@ const login = async (req, res) => {
             res.send({ success: "error" })
          }
          break;
-
    }
 }
 const updateProfile = async (req, res) => {
@@ -200,8 +235,8 @@ const getAllFall = async (req, res) => {
       if (result.device == req.body.device) {
          console.log(req.body.u_id)
          const fals = await coffeeFalModel.find({ u_id: req.body.u_id }).sort({ createdAt: '-1' }).limit(10)
-         console.log(fals)
-         return res.send({ data: fals, success: true })
+         const notifications = await appNotificationModel.find().sort({ createdAt: '-1' }).limit(10)
+         return res.send({ notifications: notifications, data: fals, success: true })
       } else {
          return res.send({ success: false })
       }

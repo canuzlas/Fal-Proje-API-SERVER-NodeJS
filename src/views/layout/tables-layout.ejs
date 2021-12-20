@@ -45,27 +45,8 @@
         <!-- Page level custom scripts -->
         <script src="/admin/js/demo/datatables-demo.js"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            $(document).ready(() => {
-                $('.commitButton').click(function () {
-                    let yorum = $('#yorum').val()
-                    console.log(yorum)
-                    $.ajax({
-                        url: '/staff/admin/addcommit?falid=' + this.id,
-                        method: 'POST',
-                        data: { commit: yorum },
-                        success: (result) => {
-                            if (result.success) {
-                                Swal.fire('Yorum yapıldı')
-                                window.location.href = '/staff/admin/commitfal'
-                            } else {
-                                Swal.fire('Hata.!')
-                            }
-                        }
-                    })
-                })
-            })
-        </script>
+        <script src="/admin/ajax/ajax.js"></script>
+        
 </body>
 
 </html>

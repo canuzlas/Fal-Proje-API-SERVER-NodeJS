@@ -34,35 +34,7 @@
     <!-- Custom scripts for all pages-->
     <script src="/admin/js/sb-admin-2.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(() => {
-            $('#loginButton').click(() => {
-                let username = $('#exampleInputEmail').val()
-                let password = $('#exampleInputPassword').val()
-                if (username.length != 0 && password.length != 0) {
-                    $.ajax({
-                        url: '/staff/admin',
-                        method: 'POST',
-                        data: {
-                            username, password
-                        },
-                        success: (result) => {
-                            if (result.success == 'error') {
-                                Swal.fire('Hata Oluştu')
-                            } else {
-                                result.success ?
-                                    window.location.href = '/staff/admin/home'
-                                    :
-                                    Swal.fire('Bilgiler eksik veye yanlış.')
-                            }
-                        }
-                    })
-                } else {
-                    Swal.fire('Salak mısın ?')
-                }
-            })
-        })
-    </script>
+    <script src="/admin/ajax/ajax.js"></script>
 
 </body>
 

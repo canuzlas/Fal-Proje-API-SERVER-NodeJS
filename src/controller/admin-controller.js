@@ -1,6 +1,7 @@
 const adminModel = require('../models/admin-model')
 const coffeeFalModel = require('../models/coffeeFalPhotos')
 const usersModel = require('../models/users-model')
+const appNotificationModel = require('../models/app-notifications-model')
 const md5 = require('md5')
 
 // ne yorum : { $ne: null }
@@ -59,5 +60,27 @@ const yorumlananfallarPage = async (req, res) => {
    return res.render('admin/didcommit-fals', { layout: 'layout/tables-layout.ejs', fallar: result, title: 'Yorumlanan Fallar', admin: req.session.admin })
 }
 
+const sendNotification = async (req, res) => {
+   const notification = await new appNotificationModel(req.body)
+   const result = await notification.save()
+   if (result) {
+      return res.send({ success: true })
+   } else {
+      return res.send({ success: false })
+   }
+}
 
-module.exports = { getLoginPage, postLoginPage, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage }
+const allNotification = async (req, res) => {
+   const result = await appNotificationModel.find().sort({ createdAt: '-1' })
+   return res.render('admin/allnotification', { layout: 'layout/tables-layout.ejs', notifications: result, title: 'Tüm Bildirimler', admin: req.session.admin })
+}
+const deleteNotification = async (req, res) => {
+   const result = await appNotificationModel.findByIdAndDelete(req.body.id)
+   if (result) {
+      return res.send({ success: true })
+   } else {
+      return res.send({ success: false })
+   }
+}
+
+module.exports = { getLoginPage, postLoginPage, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, sendNotification, allNotification, deleteNotification }
