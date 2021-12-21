@@ -11,6 +11,8 @@ router.post('/updateProfile', apiController.updateProfile)
 router.post('/updatePhoto', multer.userMulter.single('file'), apiController.updatePhoto)
 router.post('/coffeeFal', multer.coffeeFalMulter.array('files', 3), apiController.updatePhotoForCoffeeFal)
 router.post('/getAllFall', apiController.getAllFall)
+router.post('/verifytomail', apiController.verifyMail)
+
 
 
 module.exports = router

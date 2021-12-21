@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const nodemailer = require("nodemailer");
 const usersModel = require('../models/users-model')
 const coffeeFalModel = require('../models/coffeeFalPhotos')
 const appNotificationModel = require('../models/app-notifications-model')
@@ -19,7 +20,7 @@ const signUp = async (req, res) => {
          if (req.body.verifyCode == req.session.verifyCode && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
             const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
             if (result.device == req.body.device) {
-               const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password),verify:true })
+               const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password), verify: true })
                await user.save()
                return res.send({ data: user, success: true, coffeeCount: 0 })
             } else {
@@ -43,7 +44,7 @@ const signUp = async (req, res) => {
    }
 }
 const checkEmailİsUsable = async (req, res) => {
-   const result = await usersModel.find({ mail: req.body.mail })
+   const result = await usersModel.find({ mail: req.body.mail, verify: true })
    if (result.length) {
       if (req.query.forgoogle == 'true' && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
 
@@ -242,6 +243,67 @@ const getAllFall = async (req, res) => {
       return res.send({ success: false })
    }
 }
+const verifyMail = async (req, res) => {
+   try {
+      const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
+      if (result.device == req.body.device) {
+         if (req.query.updateverify) {
+            if (req.session.verifyCode == req.body.verifyCode) {
+               const result = await usersModel.findByIdAndUpdate(req.body.id, { verify: true })
+               if (result) {
+                  req.session.destroy()
+                  return res.send({ success: true })
+               } else {
+                  return res.send({ success: false })
+               }
+            } else {
+               return res.send({ success: false })
+            }
+         }
+         const user = await usersModel.find({ _id: req.body.id, verify: false })
+         if (user.length) {
+            const randomCode = await Math.floor(100000 + Math.random() * 900000)
+            const transporter = nodemailer.createTransport({
+               service: 'gmail',
+               host: "smtp.gmail.com",
+               port: 587,
+               auth: {
+                  user: "mailertestdeneme@gmail.com",
+                  pass: "120253534563",
+               }
+            });
+
+            const mailOptions = {
+               from: 'FalHub',
+               to: user[0].mail,
+               subject: 'Verify Account',
+               html: 'Merhaba' + '<p style="color:black;font-weight:bold;padding-left:10px">' + user[0].name + ',</p>' +
+
+                  'Falhub uygulamasında hesabınızı onaylamak için. <br><br>' +
+                  'Doğrulama Kodunuz: ' + '<p style="color:black;font-weight:bold;padding-left:10px">' + randomCode + '</p>'
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+               if (error) {
+                  console.log(error);
+                  return res.send({ success: false })
+               } else {
+                  transporter.close()
+                  req.session.verifyCode = randomCode
+                  return res.send({ success: true, verifyCode: randomCode })
+               }
+            });
+         } else {
+            return res.send({ success: false })
+         }
+      } else {
+         return res.send({ success: false })
+      }
+   } catch (error) {
+      console.log(error)
+      return res.send({ success: false })
+   }
+}
 
 
 module.exports = {
@@ -252,5 +314,6 @@ module.exports = {
    updateProfile,
    updatePhoto,
    updatePhotoForCoffeeFal,
-   getAllFall
+   getAllFall,
+   verifyMail
 }
