@@ -16,11 +16,10 @@ const apiJwt = async (req, res) => {
 const signUp = async (req, res) => {
    try {
       if (req.query.method == 'google') {
-         console.log('google')
          if (req.body.verifyCode == req.session.verifyCode && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
             const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
             if (result.device == req.body.device) {
-               const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
+               const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password),verify:true })
                await user.save()
                return res.send({ data: user, success: true, coffeeCount: 0 })
             } else {
@@ -30,7 +29,6 @@ const signUp = async (req, res) => {
             return res.send({ success: false })
          }
       } else {
-         console.log('google else')
          const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
          if (result.device == req.body.device) {
             const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
@@ -41,7 +39,6 @@ const signUp = async (req, res) => {
          }
       }
    } catch (error) {
-      console.log('google error')
       return res.send({ success: false })
    }
 }
@@ -245,6 +242,7 @@ const getAllFall = async (req, res) => {
       return res.send({ success: false })
    }
 }
+
 
 module.exports = {
    apiJwt,
