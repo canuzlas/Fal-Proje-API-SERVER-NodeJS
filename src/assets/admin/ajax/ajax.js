@@ -83,5 +83,24 @@ $(document).ready(() => {
         })
     })
 
+    $('.deleteuserbutton').click(function () {
+        
+        $.ajax({
+            url: '/staff/admin/deleteuser',
+            method: 'POST',
+            data: { id: this.id },
+            success: (result) => {
+                if (result.success) {
+                    $(this).parents('.tr').remove();
+                    Swal.fire('Üye Silindi.')
+                } else {
+                    Swal.fire('Hata.!')
+                }
+            }
+        })
+    })
+
+    
+
 
 })

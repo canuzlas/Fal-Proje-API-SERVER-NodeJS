@@ -18,6 +18,11 @@ router.post('/addcommit', middleWares.adminCheck, adminController.addCommitThisF
 router.post('/sendNotification', middleWares.adminCheck, adminController.sendNotification)
 router.post('/deleteNotification', middleWares.adminCheck, adminController.deleteNotification)
 router.get('/allnotification', middleWares.adminCheck, adminController.allNotification)
+//users
+router.get('/allusers', middleWares.adminCheck, adminController.allUsers)
+router.post('/deleteuser', middleWares.adminCheck, adminController.deleteUser)
+
+
 
 
 

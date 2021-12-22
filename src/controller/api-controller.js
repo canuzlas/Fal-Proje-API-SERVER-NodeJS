@@ -199,8 +199,13 @@ const updatePhotoForCoffeeFal = async (req, res) => {
       if (req.query.verify == 'true') {
          const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
          if (result.device == req.body.device) {
-            req.session.u_id = req.body.u_id
-            return res.send({ success: true })
+            const user = await usersModel.findById(req.body.u_id)
+            if (user) {
+               req.session.u_id = req.body.u_id
+               return res.send({ success: true })
+            } else {
+               return res.send({ success: false })
+            }
          } else {
             return res.send({ success: false })
          }
@@ -231,10 +236,14 @@ const getAllFall = async (req, res) => {
    try {
       const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
       if (result.device == req.body.device) {
-         console.log(req.body.u_id)
-         const fals = await coffeeFalModel.find({ u_id: req.body.u_id }).sort({ createdAt: '-1' }).limit(10)
-         const notifications = await appNotificationModel.find().sort({ createdAt: '-1' }).limit(10)
-         return res.send({ notifications: notifications, data: fals, success: true })
+         const user = await usersModel.findById(req.body.u_id)
+         if (user) {
+            const fals = await coffeeFalModel.find({ u_id: req.body.u_id }).sort({ createdAt: '-1' }).limit(10)
+            const notifications = await appNotificationModel.find().sort({ createdAt: '-1' }).limit(10)
+            return res.send({ notifications: notifications, data: fals, success: true })
+         } else {
+            return res.send({ success: false })
+         }
       } else {
          return res.send({ success: false })
       }

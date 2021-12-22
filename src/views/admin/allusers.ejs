@@ -1,0 +1,89 @@
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <%- include('./components/sidebar.ejs') %>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <%- include('./components/topbar.ejs') %>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+
+                        <!-- Page Heading -->
+                        <h1 class="h3 mb-2 text-gray-800">Tüm Üyeler</h1>
+
+                        <!-- DataTales Example -->
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Üye id</th>
+                                                <th>Üye Ad</th>
+                                                <th>Üye Mail</th>
+                                                <th>İşlemler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% users.forEach(user=> { %>
+                                                <tr class="tr">
+                                                    <td>
+                                                        <%-user._id%>
+                                                    </td>
+                                                    <td>
+                                                        <%-user.name%>
+                                                    </td>
+                                                    <td>
+                                                        <%-user.mail%>
+                                                    </td>
+                                                    <td>
+                                                        <button id="<%-user._id%>"
+                                                            class="btn btn-danger btn-sm deleteuserbutton">Sil</button>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Tüm hakları saklıdır. 2022</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<%- include('./components/addNotiModal.ejs')%>
+    <%- include('./components/logoutModal.ejs')%>

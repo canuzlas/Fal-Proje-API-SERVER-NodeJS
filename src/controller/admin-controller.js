@@ -83,4 +83,18 @@ const deleteNotification = async (req, res) => {
    }
 }
 
-module.exports = { getLoginPage, postLoginPage, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, sendNotification, allNotification, deleteNotification }
+const allUsers = async (req, res) => {
+   const result = await usersModel.find().sort({ createdAt: '-1' })
+   return res.render('admin/allusers', { layout: 'layout/tables-layout.ejs', users: result, title: 'Tüm Üyeler', admin: req.session.admin })
+}
+
+const deleteUser = async (req, res) => {
+   const result = await usersModel.findByIdAndDelete(req.body.id)
+   if (result) {
+      return res.send({ success: true })
+   } else {
+      return res.send({ success: false })
+   }
+}
+
+module.exports = { getLoginPage, postLoginPage, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, sendNotification, allNotification, deleteNotification,allUsers,deleteUser }
