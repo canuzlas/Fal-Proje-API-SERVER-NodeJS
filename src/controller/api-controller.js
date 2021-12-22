@@ -199,8 +199,8 @@ const updatePhotoForCoffeeFal = async (req, res) => {
       if (req.query.verify == 'true') {
          const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
          if (result.device == req.body.device) {
-            const user = await usersModel.findById(req.body.u_id)
-            if (user) {
+            const user = await usersModel.find({ _id: req.body.u_id, verify: true })
+            if (user.length) {
                req.session.u_id = req.body.u_id
                return res.send({ success: true })
             } else {
