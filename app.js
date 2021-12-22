@@ -9,6 +9,7 @@ require('./src/config/db')
 const apiRouter = require('./src/router/api-router')
 const frontRouter = require('./src/router/front-router')
 const adminRouter = require('./src/router/admin-router')
+const burcApiRouter = require('./src/router/burcapi-router')
 
 app.use(session({
    name: 'falhub.com',
@@ -38,6 +39,7 @@ app.set("views", path.resolve(__dirname, "src/views"))
 
 app.use('/', frontRouter)
 app.use('/api', apiRouter)
+app.use('/burc/api', burcApiRouter)
 app.use('/staff/admin', adminRouter)
 
 
