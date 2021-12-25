@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const nodemailer = require("nodemailer");
 const usersModel = require('../models/users-model')
-const coffeeFalModel = require('../models/coffeeFalPhotos')
+const falModel = require('../models/fal-model')
 const appNotificationModel = require('../models/app-notifications-model')
 const md5 = require('md5')
 const fs = require('fs')
@@ -22,7 +22,7 @@ const signUp = async (req, res) => {
             if (result.device == req.body.device) {
                const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password), verify: true })
                await user.save()
-               return res.send({ data: user, success: true, coffeeCount: 0 })
+               return res.send({ data: user, success: true, coffeeCount: 0, tarotCount: 0 })
             } else {
                return res.send({ success: false })
             }
@@ -34,7 +34,7 @@ const signUp = async (req, res) => {
          if (result.device == req.body.device) {
             const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
             await user.save()
-            return res.send({ data: user, success: true, coffeeCount: 0 })
+            return res.send({ data: user, success: true, coffeeCount: 0, tarotCount: 0 })
          } else {
             return res.send({ success: false })
          }
@@ -77,8 +77,9 @@ const login = async (req, res) => {
                const result = await usersModel.find({ mail: req.body.mail, pass: pass })
 
                if (result.length) {
-                  const count = await coffeeFalModel.count({ u_id: result.map(user => user._id) })
-                  res.send({ data: result, coffeeCount: count, success: true })
+                  const coffeeCount = await falModel.count({ u_id: result.map(user => user._id), type: 'coffee' })
+                  const tarotCount = await falModel.count({ u_id: result.map(user => user._id), type: 'tarot' })
+                  res.send({ data: result, coffeeCount: coffeeCount, tarotCount: tarotCount, success: true })
                } else {
                   res.send({ success: false })
                }
@@ -96,8 +97,10 @@ const login = async (req, res) => {
                if (result.device == req.body.device) {
                   const result = await usersModel.find({ mail: req.body.mail })
                   if (result.length) {
-                     const count = await coffeeFalModel.count({ u_id: result.map(user => user._id) })
-                     res.send({ data: result, coffeeCount: count, success: true })
+                     const coffeeCount = await falModel.count({ u_id: result.map(user => user._id), type: 'coffee' })
+                     const tarotCount = await falModel.count({ u_id: result.map(user => user._id), type: 'tarot' })
+                     console.log(tarotCount)
+                     res.send({ data: result, coffeeCount: coffeeCount, tarotCount: tarotCount, success: true })
                   } else {
                      res.send({ success: false })
                   }
@@ -217,7 +220,7 @@ const updatePhotoForCoffeeFal = async (req, res) => {
             resultsPhotos.forEach(photo => {
                photos.push(photo.filename)
             });
-            const data = await new coffeeFalModel({ u_id: req.session.u_id, photos: photos })
+            const data = await new falModel({ u_id: req.session.u_id, photos: photos, type: 'coffee' })
             await data.save()
             if (data) {
                return res.send({ success: true })
@@ -227,6 +230,18 @@ const updatePhotoForCoffeeFal = async (req, res) => {
          } else {
             return res.send({ success: false })
          }
+      }
+      if (req.query.tarot == 'true') {
+         console.log('tarot')
+         const data = await new falModel({ u_id: req.session.u_id, cards: req.body.cards, type: 'tarot' })
+         await data.save()
+         console.log(data)
+         if (data) {
+            return res.send({ success: true })
+         } else {
+            return res.send({ success: false })
+         }
+
       }
    } catch (error) {
       return res.send({ success: false })
@@ -238,7 +253,7 @@ const getAllFall = async (req, res) => {
       if (result.device == req.body.device) {
          const user = await usersModel.findById(req.body.u_id)
          if (user) {
-            const fals = await coffeeFalModel.find({ u_id: req.body.u_id }).sort({ createdAt: '-1' }).limit(10)
+            const fals = await falModel.find({ u_id: req.body.u_id }).sort({ createdAt: '-1' }).limit(10)
             const notifications = await appNotificationModel.find().sort({ createdAt: '-1' }).limit(10)
             return res.send({ notifications: notifications, data: fals, success: true })
          } else {

@@ -1,5 +1,5 @@
 const adminModel = require('../models/admin-model')
-const coffeeFalModel = require('../models/coffeeFalPhotos')
+const falModel = require('../models/fal-model')
 const usersModel = require('../models/users-model')
 const appNotificationModel = require('../models/app-notifications-model')
 const md5 = require('md5')
@@ -36,18 +36,18 @@ const adminLogout = (req, res) => {
 }
 
 const commitFalPage = async (req, res) => {
-   const result = await coffeeFalModel.find({ yorum: null }).sort({ createdAt: '1' })
+   const result = await falModel.find({ yorum: null, type: 'coffee' }).sort({ createdAt: '1' })
    return res.render('admin/commit-fal', { layout: 'layout/tables-layout.ejs', fallar: result, title: 'Kahve Yorumla', admin: req.session.admin })
 }
 const commitThisFal = async (req, res) => {
-   const result = await coffeeFalModel.findById(req.query.id)
+   const result = await falModel.findById(req.query.id)
    const user = await usersModel.findById(result.u_id)
    return res.render('admin/commitfor-fal', { layout: 'layout/tables-layout.ejs', title: 'Yorum Yap', fal: result, user: user, admin: req.session.admin })
 }
 
 const addCommitThisFal = async (req, res) => {
    console.log(req.body)
-   const result = await coffeeFalModel.findByIdAndUpdate(req.query.falid, { yorum: req.body.commit })
+   const result = await falModel.findByIdAndUpdate(req.query.falid, { yorum: req.body.commit })
    if (result) {
       return res.send({ success: true })
    } else {
@@ -56,7 +56,7 @@ const addCommitThisFal = async (req, res) => {
 }
 
 const yorumlananfallarPage = async (req, res) => {
-   const result = await coffeeFalModel.find({ yorum: { $ne: null } }).sort({ updatedAt: '-1' })
+   const result = await falModel.find({ yorum: { $ne: null }, type: 'coffee' }).sort({ updatedAt: '-1' })
    return res.render('admin/didcommit-fals', { layout: 'layout/tables-layout.ejs', fallar: result, title: 'Yorumlanan Fallar', admin: req.session.admin })
 }
 
@@ -97,4 +97,4 @@ const deleteUser = async (req, res) => {
    }
 }
 
-module.exports = { getLoginPage, postLoginPage, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, sendNotification, allNotification, deleteNotification,allUsers,deleteUser }
+module.exports = { getLoginPage, postLoginPage, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, sendNotification, allNotification, deleteNotification, allUsers, deleteUser }
