@@ -84,7 +84,7 @@ $(document).ready(() => {
     })
 
     $('.deleteuserbutton').click(function () {
-        
+
         $.ajax({
             url: '/staff/admin/deleteuser',
             method: 'POST',
@@ -100,7 +100,97 @@ $(document).ready(() => {
         })
     })
 
-    
+    $('.wasCommitButton').click(function () {
 
+        $.ajax({
+            url: '/staff/admin/getOneCommit',
+            method: 'POST',
+            data: { id: this.id },
+            success: (result) => {
+                if (result.success) {
+                    Swal.fire(String(result.commit))
+                } else {
+                    Swal.fire('Hata.!')
+                }
+            }
+        })
+
+    })
+
+    /*
+     $('.sendfbcmButton').click(function () {
+         let title = $('#messagetitle').val()
+         let body = $('#messagebody').val()
+         $.ajax({
+             url: '/staff/admin/sendfbcm',
+             method: 'POST',
+             data: { title, body },
+             success: (result) => {
+                 if (result.success) {
+                     Swal.fire('Mesaj Yollandı')
+                 } else {
+                     Swal.fire('Hata.!')
+                 }
+             }
+         })
+ 
+     })
+     */
+
+    $('.deletefalbutton').click(function () {
+
+        $.ajax({
+            url: '/staff/admin/deletefal',
+            method: 'POST',
+            data: { id: this.id },
+            success: (result) => {
+                if (result.success) {
+                    $(this).parents('.tr').remove();
+                    Swal.fire('Fal Silindi.')
+                } else {
+                    Swal.fire('Hata.!')
+                }
+            }
+        })
+
+    })
+
+    $('.banuserbutton').click(function () {
+
+        $.ajax({
+            url: '/staff/admin/dobanuser',
+            method: 'POST',
+            data: { id: this.id },
+            success: (result) => {
+                if (result.success) {
+                    $(this).parents('.tr').remove();
+                    Swal.fire('Üye Banlandı.')
+                } else {
+                    Swal.fire('Hata.!')
+                }
+            }
+        })
+
+    })
+    $('.unbanuserbutton').click(function () {
+
+        $.ajax({
+            url: '/staff/admin/dounbanuser',
+            method: 'POST',
+            data: { id: this.id },
+            success: (result) => {
+                if (result.success) {
+                    $(this).parents('.tr').remove();
+                    Swal.fire('Üye Banı Kaldırıldı.!')
+                } else {
+                    Swal.fire('Hata.!')
+                }
+            }
+        })
+
+    })
+
+    
+    
 
 })

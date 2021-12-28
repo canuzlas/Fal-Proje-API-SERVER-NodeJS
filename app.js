@@ -31,7 +31,6 @@ app.use(
 )
 app.use(express.json())
 
-
 app.use(ejsLayout)
 app.set("view engine", "ejs")
 app.set("views", path.resolve(__dirname, "src/views"))

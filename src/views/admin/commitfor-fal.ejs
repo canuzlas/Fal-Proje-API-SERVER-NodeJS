@@ -18,11 +18,24 @@
 
                   <div class="row">
                      <div class="col-12 justify-content-center text-center">
-                        <% fal.photos.forEach(photo=> { %>
-                           <a target="_blank" href="/<%-photo%>">
-                              <img width="150" height="150" src="/<%-photo%>" alt="">
-                           </a>
-                           <% }) %>
+
+                        <% if (fal.type=='coffee' ) { %>
+                           <div align="center">
+                              <% fal.photos.forEach(photo=> { %>
+                                 <a target="_blank" href="/<%-photo%>">
+                                    <img width="150" height="150" src="/<%-photo%>" alt="">
+                                 </a>
+                                 <% }) %>
+                           </div>
+                           <% }else{%>
+                              <div align="center">
+                                 <% fal.cards.forEach(card=> { %>
+                                    <a target="_blank" href="/tarotCards/<%-card+'.png'%>">
+                                       <img width="100" height="120" src="/tarotCards/<%-card+'.png'%>">
+                                    </a>
+                                    <% }) %>
+                              </div>
+                              <% } %>
                      </div>
                      <div class="col-12 justify-content-center text-center">
                         <p style="font-size: large; margin-top:20px">Fal Sahibi: <%-user.name%>
@@ -63,4 +76,4 @@
 </a>
 
 <%- include('./components/addNotiModal.ejs')%>
-<%- include('./components/logoutModal.ejs')%>
+   <%- include('./components/logoutModal.ejs')%>

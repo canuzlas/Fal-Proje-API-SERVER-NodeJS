@@ -2,10 +2,12 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require("nodemailer");
 const usersModel = require('../models/users-model')
 const falModel = require('../models/fal-model')
+const bannedUserModel = require('../models/banneduser-model');
+const { saveActivity } = require('../models/activitylog-model')
 const appNotificationModel = require('../models/app-notifications-model')
 const md5 = require('md5')
 const fs = require('fs')
-const path = require('path')
+const path = require('path');
 
 
 const apiJwt = async (req, res) => {
@@ -40,30 +42,33 @@ const signUp = async (req, res) => {
          }
       }
    } catch (error) {
+      saveActivity('Sign Up Error', String(error))
       return res.send({ success: false })
    }
 }
 const checkEmailİsUsable = async (req, res) => {
-   const result = await usersModel.find({ mail: req.body.mail, verify: true })
+   const result = await bannedUserModel.find({ mail: req.body.mail })
    if (result.length) {
-      if (req.query.forgoogle == 'true' && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
-
-         req.session.verifyCode = req.body.verifyCode
-
-         return res.send({ success: false, verifyCode: req.session.verifyCode })
-      } else {
-
-         return res.send({ success: false })
-      }
+      return res.send({ success: false })
    } else {
-      if (req.query.forgoogle == 'true' && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
-
-         req.session.verifyCode = req.body.verifyCode
-
-         return res.send({ success: true, verifyCode: req.session.verifyCode })
+      const result = await usersModel.find({ mail: req.body.mail, verify: true })
+      if (result.length) {
+         if (req.query.forgoogle == 'true' && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
+            req.session.verifyCode = req.body.verifyCode
+            return res.send({ success: false, verifyCode: req.session.verifyCode })
+         } else {
+            return res.send({ success: false })
+         }
       } else {
+         if (req.query.forgoogle == 'true' && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
 
-         return res.send({ success: true })
+            req.session.verifyCode = req.body.verifyCode
+
+            return res.send({ success: true, verifyCode: req.session.verifyCode })
+         } else {
+
+            return res.send({ success: true })
+         }
       }
    }
 }
@@ -87,6 +92,7 @@ const login = async (req, res) => {
                res.send({ success: "error" })
             }
          } catch (error) {
+            saveActivity('Sign İn Email Error', String(error))
             res.send({ success: "error" })
          }
          break;
@@ -99,7 +105,6 @@ const login = async (req, res) => {
                   if (result.length) {
                      const coffeeCount = await falModel.count({ u_id: result.map(user => user._id), type: 'coffee' })
                      const tarotCount = await falModel.count({ u_id: result.map(user => user._id), type: 'tarot' })
-                     console.log(tarotCount)
                      res.send({ data: result, coffeeCount: coffeeCount, tarotCount: tarotCount, success: true })
                   } else {
                      res.send({ success: false })
@@ -111,6 +116,7 @@ const login = async (req, res) => {
                res.send({ success: "error" })
             }
          } catch (error) {
+            saveActivity('Sign İn Google Error', String(error))
             res.send({ success: "error" })
          }
          break;
@@ -139,6 +145,7 @@ const updateProfile = async (req, res) => {
                res.send({ success: "error" })
             }
          } catch (error) {
+            saveActivity('Update Profile Name Error', String(error))
             res.send({ success: "error" })
          }
          break;
@@ -163,6 +170,7 @@ const updateProfile = async (req, res) => {
                res.send({ success: "error" })
             }
          } catch (error) {
+            saveActivity('Update Profile Mail Error', String(error))
             res.send({ success: "error" })
          }
          break;
@@ -194,6 +202,7 @@ const updatePhoto = async (req, res) => {
          }
       }
    } catch (error) {
+      saveActivity('Update PP Error', String(error))
       return res.send({ success: false })
    }
 }
@@ -244,6 +253,7 @@ const updatePhotoForCoffeeFal = async (req, res) => {
 
       }
    } catch (error) {
+      saveActivity('Fal Error', String(error))
       return res.send({ success: false })
    }
 }
@@ -263,7 +273,7 @@ const getAllFall = async (req, res) => {
          return res.send({ success: false })
       }
    } catch (error) {
-      console.log(error)
+      saveActivity('Get All Fal Error for User', String(error))
       return res.send({ success: false })
    }
 }
@@ -324,11 +334,10 @@ const verifyMail = async (req, res) => {
          return res.send({ success: false })
       }
    } catch (error) {
-      console.log(error)
+      saveActivity('Verify Email Error', String(error))
       return res.send({ success: false })
    }
 }
-
 
 module.exports = {
    apiJwt,

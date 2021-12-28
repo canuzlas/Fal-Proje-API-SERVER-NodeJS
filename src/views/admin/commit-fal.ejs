@@ -32,31 +32,43 @@
                               <thead>
                                  <tr>
                                     <th>Kullanıcı</th>
-                                    <th>Fotoğraflar</th>
+                                    <th>Fotoğraf/Kartlar</th>
                                     <th>Kaç dakika oldu</th>
-                                    <th>Yorum</th>
+                                    <th>İşlemler</th>
                                  </tr>
                               </thead>
                               <tbody>
                                  <% fallar.forEach(fal=> { %>
-                                    <tr>
+                                    <tr class="tr">
                                        <td>
                                           <%-fal.u_id%>
                                        </td>
                                        <td>
-                                          <div align="center">
-                                             <% fal.photos.forEach(photo=> { %>
-                                                <img width="30" height="30" src="/<%-photo%>" alt="<%-photo%>">
-                                             <% }) %>
-                                          </div>
+                                          <% if (fal.type=='coffee' ) { %>
+                                             <div align="center">
+                                                <% fal.photos.forEach(photo=> { %>
+                                                   <img width="30" height="30" src="/<%-photo%>" alt="<%-photo%>">
+                                                   <% }) %>
+                                             </div>
+                                             <% }else{%>
+                                                <div align="center">
+                                                   <% fal.cards.forEach(card=> { %>
+                                                      <img width="60" height="70" src="/tarotCards/<%-card+'.png'%>">
+                                                      <% }) %>
+                                                </div>
+
+                                                <% } %>
                                        </td>
                                        <td>
-                                          <%- parseInt((Date.now()-new Date(fal.createdAt))/1000/60)+' Dakika' %> 
+                                          <%- parseInt((Date.now()-new Date(fal.createdAt))/1000/60)+' Dakika' %>
                                        </td>
                                        <td>
                                           <a href="/staff/admin/commitfor?id=<%-fal._id%>">
                                              <button class="btn btn-success">Yorum Yap</button>
                                           </a>
+
+                                          <button id="<%-fal._id%>" class="btn btn-danger deletefalbutton">Sil</button>
+
                                        </td>
                                     </tr>
                                     <% }) %>
@@ -95,4 +107,4 @@
 
 
 <%- include('./components/addNotiModal.ejs')%>
-<%- include('./components/logoutModal.ejs')%>
+   <%- include('./components/logoutModal.ejs')%>

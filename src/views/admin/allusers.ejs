@@ -19,7 +19,7 @@
                     <div class="container-fluid">
 
                         <!-- Page Heading -->
-                        <h1 class="h3 mb-2 text-gray-800">Tüm Üyeler</h1>
+                        <h1 class="h3 mb-2 text-gray-800">Aktif Üyeler</h1>
 
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
@@ -49,6 +49,8 @@
                                                     <td>
                                                         <button id="<%-user._id%>"
                                                             class="btn btn-danger btn-sm deleteuserbutton">Sil</button>
+                                                        <button id="<%-user._id%>"
+                                                            class="btn btn-danger btn-sm banuserbutton">Banla</button>
                                                     </td>
                                                 </tr>
                                                 <% }) %>
@@ -57,6 +59,38 @@
                                 </div>
                             </div>
                         </div>
+
+                         <!-- Page Heading -->
+                         <h1 class="h3 mb-2 text-gray-800">Banlanmış Üyeler</h1>
+
+                         <!-- DataTales Example -->
+                         <div class="card shadow mb-4">
+                             <div class="card-body">
+                                 <div class="table-responsive">
+                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                         <thead>
+                                             <tr>
+                                                 <th>Mail</th>
+                                                 <th>İşlemler</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody>
+                                             <% bannedusers.forEach(user=> { %>
+                                                 <tr class="tr">
+                                                     <td>
+                                                         <%-user.mail%>
+                                                     </td>
+                                                     <td>
+                                                         <button id="<%-user._id%>"
+                                                             class="btn btn-success btn-sm unbanuserbutton">Ban kaldır</button>
+                                                     </td>
+                                                 </tr>
+                                                 <% }) %>
+                                         </tbody>
+                                     </table>
+                                 </div>
+                             </div>
+                         </div>
 
                     </div>
                     <!-- /.container-fluid -->

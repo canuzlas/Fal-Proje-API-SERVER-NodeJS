@@ -29,6 +29,7 @@
                               <thead>
                                  <tr>
                                     <th>Kullanıcı</th>
+                                    <th>Yorumlayan</th>
                                     <th>Fotoğraflar</th>
                                     <th>Kaç dakika oldu</th>
                                     <th>Yorum</th>
@@ -36,22 +37,36 @@
                               </thead>
                               <tbody>
                                  <% fallar.forEach(fal=> { %>
-                                    <tr>
+                                    <tr class="tr">
                                        <td>
                                           <%-fal.u_id%>
                                        </td>
                                        <td>
-                                          <div align="center">
-                                             <% fal.photos.forEach(photo=> { %>
-                                                <img width="30" height="30" src="/<%-photo%>" alt="<%-photo%>">
-                                             <% }) %>
-                                          </div>
+                                          <%-fal.whodidcommit%>
                                        </td>
                                        <td>
-                                          <%- parseInt((Date.now()-new Date(fal.updatedAt))/1000/60)+' Dakika' %> 
+                                          <% if (fal.type=='coffee' ) { %>
+                                             <div align="center">
+                                                <% fal.photos.forEach(photo=> { %>
+                                                   <img width="30" height="30" src="/<%-photo%>" alt="<%-photo%>">
+                                                   <% }) %>
+                                             </div>
+                                             <% }else{%>
+                                                <div align="center">
+                                                   <% fal.cards.forEach(card=> { %>
+                                                      <img width="60" height="70" src="/tarotCards/<%-card+'.png'%>">
+                                                      <% }) %>
+                                                </div>
+
+                                                <% } %>
                                        </td>
                                        <td>
-                                         <button class="btn btn-success">Yorum Yapıldı</button> 
+                                          <%- parseInt((Date.now()-new Date(fal.updatedAt))/1000/60)+' Dakika' %>
+                                       </td>
+                                       <td>
+                                          <button id="<%-fal._id%>" class="btn btn-success wasCommitButton">Yorum
+                                             Yapıldı</button>
+                                          <button id="<%-fal._id%>" class="btn btn-danger deletefalbutton">Sil</button>
                                        </td>
                                     </tr>
                                     <% }) %>
@@ -89,5 +104,4 @@
 </a>
 
 <%- include('./components/addNotiModal.ejs')%>
-<%- include('./components/logoutModal.ejs')%>
-
+   <%- include('./components/logoutModal.ejs')%>
