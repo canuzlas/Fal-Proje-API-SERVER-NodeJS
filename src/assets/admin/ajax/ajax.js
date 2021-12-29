@@ -16,7 +16,7 @@ $(document).ready(() => {
                         Swal.fire('Hata Oluştu')
                     } else {
                         result.success ?
-                            window.location.href = '/staff/admin/home'
+                            window.location.href = '/staff/admin/verify'
                             :
                             Swal.fire('Bilgiler eksik veye yanlış.')
                     }
@@ -25,6 +25,23 @@ $(document).ready(() => {
         } else {
             Swal.fire('Salak mısın ?')
         }
+    })
+
+    $('#adminVerifyButton').click(function () {
+        let code = $('#verifyCode').val()
+        $.ajax({
+            url: '/staff/admin/verify',
+            method: 'POST',
+            data: { code },
+            success: (result) => {
+                if (result.success) {
+                    console.log(result)
+                    window.location.href = '/staff/admin/home'
+                } else {
+                    Swal.fire('Kod Hatalı.!')
+                }
+            }
+        })
     })
 
     //commit coffee
@@ -190,7 +207,7 @@ $(document).ready(() => {
 
     })
 
-    
-    
+
+
 
 })

@@ -1,5 +1,6 @@
 const adminModel = require('../models/admin-model')
 const falModel = require('../models/fal-model')
+const nodemailer = require("nodemailer");
 const usersModel = require('../models/users-model')
 const appNotificationModel = require('../models/app-notifications-model')
 const { saveActivity, activityLogModel } = require('../models/activitylog-model')
@@ -19,9 +20,39 @@ const postLoginPage = async (req, res) => {
    try {
       const result = await adminModel.findOne({ $or: [{ mail: req.body.username, pass: md5(req.body.password) }, { username: req.body.username, pass: md5(req.body.password) }] })
       if (result) {
-         req.session.admin = result
-         saveActivity('Admin Giriş', String(result.username))
-         return res.send({ success: true })
+         const randomCode = await Math.floor(100000 + Math.random() * 900000)
+         const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host: "smtp.gmail.com",
+            port: 587,
+            auth: {
+               user: "mailertestdeneme@gmail.com",
+               pass: "120253534563",
+            }
+         });
+
+         const mailOptions = {
+            from: 'FalHub',
+            to: result.mail,
+            subject: 'Verify Admin',
+            html: 'Merhaba' + '<p style="color:black;font-weight:bold;padding-left:10px">' + result.username + ',</p>' +
+
+               'Falhub admin paneline girebilmek için. <br><br>' +
+               'Doğrulama Kodunuz: ' + '<p style="color:black;font-weight:bold;padding-left:10px">' + randomCode + '</p>'
+         };
+
+         transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+               console.log(error);
+               return res.send({ success: false })
+            } else {
+               transporter.close()
+               req.session.ifadmin = result
+               req.session.verifyAdmin = randomCode
+               saveActivity('Admin Verify Page Redirect', String(result.username))
+               return res.send({ success: true })
+            }
+         });
       } else {
          saveActivity('Admin Hatalı Giriş', String(req.body.username))
          return res.send({ success: false })
@@ -29,6 +60,20 @@ const postLoginPage = async (req, res) => {
    } catch (error) {
       saveActivity('Admin Giriş Error', String(req.body.username))
       return res.send({ success: 'error' })
+   }
+}
+const showAdminVerifyPage = (req, res) => {
+   res.render('admin/admin-verify', { layout: 'layout/login-layout.ejs' })
+}
+const verifyToAdmin = (req, res) => {
+   if (req.session.verifyAdmin == req.body.code) {
+      saveActivity('Admin Giriş', String(req.session.ifadmin.username))
+      delete req.session.verifyAdmin
+      req.session.admin = req.session.ifadmin
+      delete req.session.ifadmin
+      return res.send({ success: true })
+   } else {
+      return res.send({ success: false })
    }
 }
 const getHomePage = (req, res) => {
@@ -75,8 +120,10 @@ const getOneCommit = async (req, res) => {
 const deleteFal = async (req, res) => {
    const result = await falModel.findByIdAndDelete(req.body.id)
    if (result) {
+      saveActivity('Fal Yorum Silindi', String(req.session.admin.username))
       return res.send({ success: true })
    } else {
+      saveActivity('Fal Yorum Silme Hata', String(req.session.admin.username))
       return res.send({ success: false })
    }
 }
@@ -142,7 +189,6 @@ const doUnBanUser = async (req, res) => {
       return res.send({ success: false })
    }
 }
-
 const getAllActivitylog = async (req, res) => {
    const result = await activityLogModel.find().sort({ createdAt: '-1' })
    return res.render('admin/allactivity', { layout: 'layout/tables-layout.ejs', activities: result, title: 'Tüm Aksiyonlar', admin: req.session.admin })
@@ -176,4 +222,4 @@ const sendFbcm = async (req, res) => {
 }
 */
 
-module.exports = { getLoginPage, postLoginPage, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, getOneCommit, deleteFal, sendNotification, allNotification, deleteNotification, allUsers, deleteUser, doBanUser, doUnBanUser, getAllActivitylog }
+module.exports = { getLoginPage, postLoginPage, showAdminVerifyPage, verifyToAdmin, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, getOneCommit, deleteFal, sendNotification, allNotification, deleteNotification, allUsers, deleteUser, doBanUser, doUnBanUser, getAllActivitylog }

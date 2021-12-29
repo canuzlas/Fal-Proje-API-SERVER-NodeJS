@@ -6,6 +6,8 @@ const middleWares = require('../middleware/admin-session-check')
 //login
 router.get('/', adminController.getLoginPage)
 router.post('/', adminController.postLoginPage)
+router.get('/verify', adminController.showAdminVerifyPage)
+router.post('/verify', adminController.verifyToAdmin)
 //home
 router.get('/home', middleWares.adminCheck, adminController.getHomePage)
 router.get('/logout', middleWares.adminCheck, adminController.adminLogout)

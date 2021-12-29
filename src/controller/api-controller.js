@@ -9,7 +9,6 @@ const md5 = require('md5')
 const fs = require('fs')
 const path = require('path');
 
-
 const apiJwt = async (req, res) => {
 
    const token = await jwt.sign({ device: req.body.device }, process.env.JWT_SECRET, { expiresIn: '1h' })
@@ -155,7 +154,7 @@ const updateProfile = async (req, res) => {
             console.log(result)
             if (result.device == req.body.device) {
                console.log(req.body.u_id)
-               const updateResult = await usersModel.findByIdAndUpdate(req.body.u_id, { mail: req.body.mail })
+               const updateResult = await usersModel.findByIdAndUpdate(req.body.u_id, { mail: req.body.mail, verify: false })
                if (updateResult) {
                   const user = await usersModel.findById(updateResult._id)
                   if (user) {
