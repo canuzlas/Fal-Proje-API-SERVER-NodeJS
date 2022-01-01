@@ -29,6 +29,10 @@ router.post('/dobanuser', middleWares.adminCheck, adminController.doBanUser)
 router.post('/dounbanuser', middleWares.adminCheck, adminController.doUnBanUser)
 //activity Log
 router.get('/activitylog', middleWares.adminCheck, adminController.getAllActivitylog)
+//liveChat
+router.get('/livechat', middleWares.adminCheck, adminController.getPageLiveChats)
+router.get('/livechatfor', middleWares.adminCheck, adminController.liveChatForId)
+
 /* 
 //Firebase Cloud Message
 router.get('/sendfbcm', middleWares.adminCheck, adminController.getShowSendfbcm)

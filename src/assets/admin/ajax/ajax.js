@@ -16,7 +16,8 @@ $(document).ready(() => {
                         Swal.fire('Hata Oluştu')
                     } else {
                         result.success ?
-                            window.location.href = '/staff/admin/verify'
+                            //verifyla degis
+                            window.location.href = '/staff/admin/home'
                             :
                             Swal.fire('Bilgiler eksik veye yanlış.')
                     }

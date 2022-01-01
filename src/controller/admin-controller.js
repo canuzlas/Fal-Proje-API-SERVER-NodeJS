@@ -5,6 +5,7 @@ const usersModel = require('../models/users-model')
 const appNotificationModel = require('../models/app-notifications-model')
 const { saveActivity, activityLogModel } = require('../models/activitylog-model')
 const bannedUserModel = require('../models/banneduser-model')
+const fbdatabase = require('../config/firebaseConfig')
 
 /* 
 //firebase
@@ -19,6 +20,9 @@ const getLoginPage = (req, res) => {
 const postLoginPage = async (req, res) => {
    try {
       const result = await adminModel.findOne({ $or: [{ mail: req.body.username, pass: md5(req.body.password) }, { username: req.body.username, pass: md5(req.body.password) }] })
+      req.session.admin = result
+      return res.send({ success: true })
+      /* 
       if (result) {
          const randomCode = await Math.floor(100000 + Math.random() * 900000)
          const transporter = nodemailer.createTransport({
@@ -57,6 +61,7 @@ const postLoginPage = async (req, res) => {
          saveActivity('Admin Hatalı Giriş', String(req.body.username))
          return res.send({ success: false })
       }
+      */
    } catch (error) {
       saveActivity('Admin Giriş Error', String(req.body.username))
       return res.send({ success: 'error' })
@@ -193,6 +198,24 @@ const getAllActivitylog = async (req, res) => {
    const result = await activityLogModel.find().sort({ createdAt: '-1' })
    return res.render('admin/allactivity', { layout: 'layout/tables-layout.ejs', activities: result, title: 'Tüm Aksiyonlar', admin: req.session.admin })
 }
+
+const getPageLiveChats = async (req, res) => {
+
+   fbdatabase.ref('/spchat').once('value', (snapshot) => {
+      let data = []
+      snapshot.forEach(res => {
+         data.push(res.key)
+      })
+      return res.render('admin/live-chats', { layout: 'layout/tables-layout.ejs', messages: data, title: 'Canlı Destek', admin: req.session.admin })
+   })
+}
+const liveChatForId = async (req, res) => {
+   req.session.userId = req.query.id
+   return res.render('admin/live-chats-user', { layout: 'layout/tables-layout.ejs', title: req.query.id + ' Üye Sohbet', admin: req.session.admin })
+}
+
+
+
 /*
 const getShowSendfbcm = async (req, res) => {
    return res.render('admin/sendfbcm', { layout: 'layout/tables-layout.ejs', title: 'Firebase Cloud Message', admin: req.session.admin })
@@ -222,4 +245,4 @@ const sendFbcm = async (req, res) => {
 }
 */
 
-module.exports = { getLoginPage, postLoginPage, showAdminVerifyPage, verifyToAdmin, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, getOneCommit, deleteFal, sendNotification, allNotification, deleteNotification, allUsers, deleteUser, doBanUser, doUnBanUser, getAllActivitylog }
+module.exports = { getLoginPage, postLoginPage, showAdminVerifyPage, verifyToAdmin, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, getOneCommit, deleteFal, sendNotification, allNotification, deleteNotification, allUsers, deleteUser, doBanUser, doUnBanUser, getAllActivitylog, getPageLiveChats, liveChatForId }

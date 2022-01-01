@@ -18,6 +18,9 @@
 
     <!-- Custom styles for this template -->
     <link href="/admin/css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- chat css -->
+    <link href="/admin/css/chat.css" rel="stylesheet">
+
 
     <!-- Custom styles for this page -->
     <link href="/admin/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -46,7 +49,37 @@
         <script src="/admin/js/demo/datatables-demo.js"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="/admin/ajax/ajax.js"></script>
-        
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            $(document).ready(() => {
+                const socket = io("http://localhost:3000");
+                socket.on('disconnect', () => { socket.removeAllListeners("message") })
+                socket.on("message", (res) => {
+                    if (res) {
+                        // memoryId.length ? memoryId.forEach(key => key == res.key ? $(`#${key}`).remove() : memoryId.push(res.key)) : memoryId.push(res.key)
+                        $(`#${res.key}`).remove()
+
+                        if (res.msg.fromWho == 'user') {
+                            return (
+                                $('#chat-content').append(
+                                    `<div id=${res.key}  class="mt-2 ml-3" align="left">
+                                    <p style="max-width: 50%;" class="btn btn-primary">${res.msg.message}<span style="color: black; font-size: 10px; padding-left: 10px; padding-top: 10px;">Üye / ${res.msg.time}</span></p>
+                                    </div>`
+                                )
+                            )
+                        } else {
+                            return (
+                                $('#chat-content').append(
+                                    `<div id=${res.key} class="mt-2 mr-3" align="right">
+                                    <p style="max-width: 50%;" class="btn btn-success">${res.msg.message}<span style="color: black; font-size: 10px; padding-left: 10px; padding-top: 10px;">Admin / ${res.msg.time}</span></p>
+                                    </div>`
+                                )
+                            )
+                        }
+                    }
+                });
+            })
+        </script>
 </body>
 
 </html>
