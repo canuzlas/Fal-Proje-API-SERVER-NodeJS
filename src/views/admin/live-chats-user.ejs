@@ -17,43 +17,43 @@
 
                     <!-- Begin Page Content -->
                     <div class="container-fluid">
-                        <div class="page-content page-container" id="page-content">
-                            <div class="padding">
-                                <div class="row container d-flex justify-content-center">
-                                    <div class="col-md-12 col-lg-6">
-                                        <div class="card card-bordered">
-                                            <div class="card-header">
-                                                <h4 class="card-title"><strong>
-                                                        <%-title%>
-                                                    </strong></h4>
-                                            </div>
-                                            <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
-                                                style="overflow-y: scroll !important; height:400px !important;">
-                                                <!-- <div class="mt-2 mr-3" align="right">
-                                                    <p style="max-width: 50%;" class="btn btn-success"><span style="color: black; font-size: 10px; padding-left: 10px; padding-top: 10px;">Admin / 14124</span></p>
-                                                </div>
-                                                <div class="mt-2 ml-3" align="left">
-                                                    <p style="max-width: 50%;" class="btn btn-primary"><span style="color: black; font-size: 10px; padding-left: 10px; padding-top: 10px;">Üye / 14124</span></p>
-                                                </div> -->
-                                                <div class="ps-scrollbar-y-rail"
-                                                    style="top: 0px; height: 0px; right: 2px;">
-                                                    <div class="ps-scrollbar-y" tabindex="0"
-                                                        style="top: 0px; height: 2px;"></div>
-                                                </div>
-                                            </div>
-                                            <div class="publisher bt-1 border-light">
-                                                <input class="publisher-input" type="text"
-                                                    placeholder="Write something">
-                
-                                                <a class="publisher-btn text-info" href="#" data-abc="true"><i class="fa fa-paper-plane"></i>
-                                                </a>
+                        <div align="center">
+                            <div class="col-md-12 col-lg-6">
+                                <div class="card card-bordered">
+                                    <div align="right"><button id="<%-userId%>"
+                                            class="btn btn-danger btn-sm deleteAllMessages">Konuşmayı sil</button>
+                                    </div>
+                                    <div class="card-header">
+                                        <h4 class="card-title col-md-12"><strong>
+                                                <%-title%>
+                                            </strong></h4>
+
+                                    </div>
+                                    <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
+                                        style="overflow-y: scroll !important; height:400px !important;">
+                                        <!-- <div class="mt-2 mr-3" align="right">
+                                        <p style="max-width: 50%;" class="btn btn-success"><span style="color: black; font-size: 10px; padding-left: 10px; padding-top: 10px;">Admin / 14124</span></p>
+                                    </div>
+                                    <div class="mt-2 ml-3" align="left">
+                                        <p style="max-width: 50%;" class="btn btn-primary"><span style="color: black; font-size: 10px; padding-left: 10px; padding-top: 10px;">Üye / 14124</span></p>
+                                    </div> -->
+                                        <div class="ps-scrollbar-y-rail" style="top: 0px; height: 0px; right: 2px;">
+                                            <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 2px;">
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="publisher bt-1 border-light">
+                                        <input id="message" class="publisher-input" type="text"
+                                            placeholder="Write something">
+
+                                        <a id="sendMessage" class="publisher-btn text-info" href="#" data-abc="true"><i
+                                                class="fa fa-paper-plane"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                     <!-- /.container-fluid -->
 

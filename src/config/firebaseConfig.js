@@ -8,5 +8,4 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const fbdatabase = firebase.database()
 
-module.exports = fbdatabase
-
+module.exports = fbdatabase 

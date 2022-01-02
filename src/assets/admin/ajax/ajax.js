@@ -135,25 +135,24 @@ $(document).ready(() => {
 
     })
 
-    /*
-     $('.sendfbcmButton').click(function () {
-         let title = $('#messagetitle').val()
-         let body = $('#messagebody').val()
-         $.ajax({
-             url: '/staff/admin/sendfbcm',
-             method: 'POST',
-             data: { title, body },
-             success: (result) => {
-                 if (result.success) {
-                     Swal.fire('Mesaj Yollandı')
-                 } else {
-                     Swal.fire('Hata.!')
-                 }
-             }
-         })
- 
-     })
-     */
+
+    $('.sendfbcmButton').click(function () {
+        let title = $('#messagetitle').val()
+        let body = $('#messagebody').val()
+        $.ajax({
+            url: '/staff/admin/sendfbcm',
+            method: 'POST',
+            data: { title, body },
+            success: (result) => {
+                if (result.success) {
+                    Swal.fire('Mesaj Yollandı')
+                } else {
+                    Swal.fire('Hata.!')
+                }
+            }
+        })
+
+    })
 
     $('.deletefalbutton').click(function () {
 

@@ -206,54 +206,60 @@ const updatePhoto = async (req, res) => {
    }
 }
 const updatePhotoForCoffeeFal = async (req, res) => {
-   try {
-      if (req.query.verify == 'true') {
-         const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
-         if (result.device == req.body.device) {
-            const user = await usersModel.find({ _id: req.body.u_id, verify: true })
-            if (user.length) {
-               req.session.u_id = req.body.u_id
-               return res.send({ success: true })
+   const result = await bannedUserModel.find({ mail: req.body.mail })
+   if (result.length) {
+      return res.send({ success: false })
+   } else {
+      try {
+         if (req.query.verify == 'true') {
+            const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
+            if (result.device == req.body.device) {
+               const user = await usersModel.find({ _id: req.body.u_id, verify: true })
+               if (user.length) {
+                  req.session.u_id = req.body.u_id
+                  return res.send({ success: true })
+               } else {
+                  return res.send({ success: false })
+               }
             } else {
                return res.send({ success: false })
             }
-         } else {
-            return res.send({ success: false })
          }
-      }
-      if (req.query.savePhoto == 'true') {
-         if (req.files) {
-            const photos = new Array()
-            const resultsPhotos = req.files
-            resultsPhotos.forEach(photo => {
-               photos.push(photo.filename)
-            });
-            const data = await new falModel({ u_id: req.session.u_id, photos: photos, type: 'coffee' })
+         if (req.query.savePhoto == 'true') {
+            if (req.files) {
+               const photos = new Array()
+               const resultsPhotos = req.files
+               resultsPhotos.forEach(photo => {
+                  photos.push(photo.filename)
+               });
+               const data = await new falModel({ u_id: req.session.u_id, photos: photos, type: 'coffee' })
+               await data.save()
+               if (data) {
+                  return res.send({ success: true })
+               } else {
+                  return res.send({ success: false })
+               }
+            } else {
+               return res.send({ success: false })
+            }
+         }
+         if (req.query.tarot == 'true') {
+            console.log('tarot')
+            const data = await new falModel({ u_id: req.session.u_id, cards: req.body.cards, type: 'tarot' })
             await data.save()
+            console.log(data)
             if (data) {
                return res.send({ success: true })
             } else {
                return res.send({ success: false })
             }
-         } else {
-            return res.send({ success: false })
-         }
-      }
-      if (req.query.tarot == 'true') {
-         console.log('tarot')
-         const data = await new falModel({ u_id: req.session.u_id, cards: req.body.cards, type: 'tarot' })
-         await data.save()
-         console.log(data)
-         if (data) {
-            return res.send({ success: true })
-         } else {
-            return res.send({ success: false })
-         }
 
+         }
+      } catch (error) {
+         saveActivity('Fal Error', String(error))
+         return res.send({ success: false })
       }
-   } catch (error) {
-      saveActivity('Fal Error', String(error))
-      return res.send({ success: false })
+
    }
 }
 const getAllFall = async (req, res) => {

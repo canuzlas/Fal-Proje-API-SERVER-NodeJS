@@ -7,11 +7,6 @@ const { saveActivity, activityLogModel } = require('../models/activitylog-model'
 const bannedUserModel = require('../models/banneduser-model')
 const fbdatabase = require('../config/firebaseConfig')
 
-/* 
-//firebase
-var admin = require("firebase-admin");
-var serviceAccount = require('../config/falhub-6c7a2-firebase-adminsdk-kuv1f-e0b46620ce.json');
-*/
 const md5 = require('md5')
 // ne yorum : { $ne: null }
 const getLoginPage = (req, res) => {
@@ -198,7 +193,6 @@ const getAllActivitylog = async (req, res) => {
    const result = await activityLogModel.find().sort({ createdAt: '-1' })
    return res.render('admin/allactivity', { layout: 'layout/tables-layout.ejs', activities: result, title: 'Tüm Aksiyonlar', admin: req.session.admin })
 }
-
 const getPageLiveChats = async (req, res) => {
 
    fbdatabase.ref('/spchat').once('value', (snapshot) => {
@@ -211,38 +205,20 @@ const getPageLiveChats = async (req, res) => {
 }
 const liveChatForId = async (req, res) => {
    req.session.userId = req.query.id
-   return res.render('admin/live-chats-user', { layout: 'layout/tables-layout.ejs', title: req.query.id + ' Üye Sohbet', admin: req.session.admin })
+   return res.render('admin/live-chats-user', { layout: 'layout/tables-layout.ejs', userId: req.query.id, title: req.query.id + ' Üye Sohbet', admin: req.session.admin })
 }
-
-
-
-/*
 const getShowSendfbcm = async (req, res) => {
    return res.render('admin/sendfbcm', { layout: 'layout/tables-layout.ejs', title: 'Firebase Cloud Message', admin: req.session.admin })
 }
 const sendFbcm = async (req, res) => {
-   admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: 'https://falhub-6c7a2.firebaseio.com'
-   });
-   var topic = 'general';
-   var message = {
-      notification: {
-         title: String(req.body.title),
-         body: String(req.body.body)
-      },
-   };
-   // Send a message to devices subscribed to the provided topic.
-   admin.messaging().sendToDevice('aslfasfa',message)
-      .then((response) => {
-         console.log('Successfully sent message:', response);
-         return res.send({success:true})
-      })
-      .catch((error) => {
-         console.log('Error sending message:', error);
-         return res.send({success:false})
-      });
+   console.log(req.body)
+   fbdatabase.ref('/notification').set({ title: req.body.title, body: req.body.body }, (err) => {
+      if (!err) {
+         return res.send({ success: true })
+      } else {
+         return res.send({ success: false })
+      }
+   })
 }
-*/
 
-module.exports = { getLoginPage, postLoginPage, showAdminVerifyPage, verifyToAdmin, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, getOneCommit, deleteFal, sendNotification, allNotification, deleteNotification, allUsers, deleteUser, doBanUser, doUnBanUser, getAllActivitylog, getPageLiveChats, liveChatForId }
+module.exports = { getLoginPage, postLoginPage, showAdminVerifyPage, verifyToAdmin, getHomePage, adminLogout, commitFalPage, commitThisFal, addCommitThisFal, yorumlananfallarPage, getOneCommit, deleteFal, sendNotification, allNotification, deleteNotification, allUsers, deleteUser, doBanUser, doUnBanUser, getAllActivitylog, getPageLiveChats, liveChatForId, getShowSendfbcm, sendFbcm }

@@ -33,11 +33,10 @@ router.get('/activitylog', middleWares.adminCheck, adminController.getAllActivit
 router.get('/livechat', middleWares.adminCheck, adminController.getPageLiveChats)
 router.get('/livechatfor', middleWares.adminCheck, adminController.liveChatForId)
 
-/* 
 //Firebase Cloud Message
 router.get('/sendfbcm', middleWares.adminCheck, adminController.getShowSendfbcm)
 router.post('/sendfbcm', middleWares.adminCheck, adminController.sendFbcm)
-*/
+
 
 
 

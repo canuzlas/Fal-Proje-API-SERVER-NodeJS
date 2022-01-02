@@ -52,13 +52,13 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
             $(document).ready(() => {
+                $('#chat-content').animate({ scrollTop: 9999 }, 1000)
                 const socket = io("http://localhost:3000");
                 socket.on('disconnect', () => { socket.removeAllListeners("message") })
                 socket.on("message", (res) => {
                     if (res) {
                         // memoryId.length ? memoryId.forEach(key => key == res.key ? $(`#${key}`).remove() : memoryId.push(res.key)) : memoryId.push(res.key)
                         $(`#${res.key}`).remove()
-
                         if (res.msg.fromWho == 'user') {
                             return (
                                 $('#chat-content').append(
@@ -78,6 +78,27 @@
                         }
                     }
                 });
+                $(`#sendMessage`).click(() => {
+                    let msg = $(`#message`).val()
+                    if (msg.length >= 1) {
+                        socket.emit('remessage', msg)
+                        $(`#message`).val("")
+                    }
+                })
+
+                $(`.deleteAllMessages`).click(function () {
+                    socket.emit('deletemsg', this.id)
+                    socket.on('deletemsg', (res) => {
+                        if(res.success){
+                            Swal.fire('Mesajlar Silindi')
+                            window.location.href = '/staff/admin/livechat'
+                        }else{
+                            Swal.fire('Hata.!')
+                        }
+                    })
+
+                })
+
             })
         </script>
 </body>
