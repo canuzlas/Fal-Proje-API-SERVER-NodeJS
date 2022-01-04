@@ -57,7 +57,6 @@
                 socket.on('disconnect', () => { socket.removeAllListeners("message") })
                 socket.on("message", (res) => {
                     if (res) {
-                        // memoryId.length ? memoryId.forEach(key => key == res.key ? $(`#${key}`).remove() : memoryId.push(res.key)) : memoryId.push(res.key)
                         $(`#${res.key}`).remove()
                         if (res.msg.fromWho == 'user') {
                             return (
@@ -81,7 +80,7 @@
                 $(`#sendMessage`).click(() => {
                     let msg = $(`#message`).val()
                     if (msg.length >= 1) {
-                        setTimeout(() => $('#chat-content').animate({ scrollTop: 9999 }, 1000), 500)
+                        setTimeout(() => $('#chat-content').animate({ scrollTop: 9999 }, 500), 500)
                         socket.emit('remessage', msg)
                         $(`#message`).val("")
                     }
