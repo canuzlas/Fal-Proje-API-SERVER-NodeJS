@@ -98,9 +98,11 @@ const addCommitThisFal = async (req, res) => {
    console.log(req.body)
    const result = await falModel.findByIdAndUpdate(req.query.falid, { yorum: req.body.commit, whodidcommit: req.session.admin.username })
    if (result) {
+      await usersModel.findByIdAndUpdate(result.u_id, { didsend: false })
       saveActivity('Fal Yorum Yapıldı', String(req.session.admin.username))
       return res.send({ success: true })
    } else {
+      usersModel.findByIdAndUpdate(result.u_id, { didsend: false })
       saveActivity('Fal Yorum Hata', String(req.session.admin.username))
       return res.send({ success: false })
    }

@@ -21,7 +21,7 @@ const signUp = async (req, res) => {
          if (req.body.verifyCode == req.session.verifyCode && req.body.secretPass === 'AqWqRq34252234ASADafasd+^dfsdf') {
             const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
             if (result.device == req.body.device) {
-               const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password), verify: true })
+               const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password), verify: true, didsend: false })
                await user.save()
                return res.send({ data: user, success: true, coffeeCount: 0, tarotCount: 0 })
             } else {
@@ -33,7 +33,7 @@ const signUp = async (req, res) => {
       } else {
          const result = await jwt.verify(req.body.token, process.env.JWT_SECRET)
          if (result.device == req.body.device) {
-            const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password) })
+            const user = await new usersModel({ name: req.body.name, mail: req.body.mail, pass: md5(req.body.password), didsend: false })
             await user.save()
             return res.send({ data: user, success: true, coffeeCount: 0, tarotCount: 0 })
          } else {
@@ -216,8 +216,12 @@ const updatePhotoForCoffeeFal = async (req, res) => {
             if (result.device == req.body.device) {
                const user = await usersModel.find({ _id: req.body.u_id, verify: true })
                if (user.length) {
-                  req.session.u_id = req.body.u_id
-                  return res.send({ success: true })
+                  if (user[0].didsend) {
+                     return res.send({ success: "didsend" })
+                  } else {
+                     req.session.u_id = req.body.u_id
+                     return res.send({ success: true })
+                  }
                } else {
                   return res.send({ success: false })
                }
@@ -235,6 +239,7 @@ const updatePhotoForCoffeeFal = async (req, res) => {
                const data = await new falModel({ u_id: req.session.u_id, photos: photos, type: 'coffee' })
                await data.save()
                if (data) {
+                  await usersModel.findByIdAndUpdate(req.session.u_id, { didsend: true })
                   return res.send({ success: true })
                } else {
                   return res.send({ success: false })
@@ -244,11 +249,12 @@ const updatePhotoForCoffeeFal = async (req, res) => {
             }
          }
          if (req.query.tarot == 'true') {
-            console.log('tarot')
+
             const data = await new falModel({ u_id: req.session.u_id, cards: req.body.cards, type: 'tarot' })
             await data.save()
-            console.log(data)
+
             if (data) {
+               await usersModel.findByIdAndUpdate(req.session.u_id, { didsend: true })
                return res.send({ success: true })
             } else {
                return res.send({ success: false })
