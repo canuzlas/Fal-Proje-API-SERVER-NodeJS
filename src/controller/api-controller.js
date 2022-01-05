@@ -303,17 +303,17 @@ const verifyMail = async (req, res) => {
          if (user.length) {
             const randomCode = await Math.floor(100000 + Math.random() * 900000)
             const transporter = nodemailer.createTransport({
-               service: 'gmail',
-               host: "smtp.gmail.com",
-               port: 587,
+               host: "mail.falhub.com",
+               port: 465,
+               secure: true, // upgrade later with STARTTLS
                auth: {
-                  user: "mailertestdeneme@gmail.com",
-                  pass: "120253534563",
-               }
+                  user: "mailer@falhub.com",
+                  pass: "s2ciyuzl4s",
+               },
             });
 
             const mailOptions = {
-               from: 'FalHub',
+               from: 'mailer@falhub.com',
                to: user[0].mail,
                subject: 'Verify Account',
                html: 'Merhaba' + '<p style="color:black;font-weight:bold;padding-left:10px">' + user[0].name + ',</p>' +

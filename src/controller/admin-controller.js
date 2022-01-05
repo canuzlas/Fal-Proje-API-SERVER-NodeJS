@@ -15,23 +15,23 @@ const getLoginPage = (req, res) => {
 const postLoginPage = async (req, res) => {
    try {
       const result = await adminModel.findOne({ $or: [{ mail: req.body.username, pass: md5(req.body.password) }, { username: req.body.username, pass: md5(req.body.password) }] })
-      req.session.admin = result
-      return res.send({ success: true })
-      /* 
+      // req.session.admin = result
+      // return res.send({ success: true })
+
       if (result) {
          const randomCode = await Math.floor(100000 + Math.random() * 900000)
          const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            host: "smtp.gmail.com",
-            port: 587,
+            host: "mail.falhub.com",
+            port: 465,
+            secure: true, // upgrade later with STARTTLS
             auth: {
-               user: "mailertestdeneme@gmail.com",
-               pass: "120253534563",
-            }
+               user: "mailer@falhub.com",
+               pass: "s2ciyuzl4s",
+            },
          });
 
          const mailOptions = {
-            from: 'FalHub',
+            from: "mailer@falhub.com",
             to: result.mail,
             subject: 'Verify Admin',
             html: 'Merhaba' + '<p style="color:black;font-weight:bold;padding-left:10px">' + result.username + ',</p>' +
@@ -56,7 +56,7 @@ const postLoginPage = async (req, res) => {
          saveActivity('Admin Hatalı Giriş', String(req.body.username))
          return res.send({ success: false })
       }
-      */
+
    } catch (error) {
       saveActivity('Admin Giriş Error', String(req.body.username))
       return res.send({ success: 'error' })

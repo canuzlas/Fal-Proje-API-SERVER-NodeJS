@@ -17,7 +17,7 @@ $(document).ready(() => {
                     } else {
                         result.success ?
                             //verifyla degis
-                            window.location.href = '/staff/admin/home'
+                            window.location.href = '/staff/admin/verify'
                             :
                             Swal.fire('Bilgiler eksik veye yanlış.')
                     }
