@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require("nodemailer");
 const usersModel = require('../models/users-model')
 const falModel = require('../models/fal-model')
+const firebaseAdminModel = require('../models/firebase-admin')
 const bannedUserModel = require('../models/banneduser-model');
 const { saveActivity } = require('../models/activitylog-model')
 const appNotificationModel = require('../models/app-notifications-model')
@@ -12,7 +13,8 @@ const path = require('path');
 const apiJwt = async (req, res) => {
 
    const token = await jwt.sign({ device: req.body.device }, process.env.JWT_SECRET, { expiresIn: '1h' })
-   return res.send({ token: token })
+   const admin = await firebaseAdminModel.findOne()
+   return res.send({ token: token, admin: admin })
 
 }
 const signUp = async (req, res) => {
