@@ -28,14 +28,18 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
+                                                <th>No</th>
                                                 <th>Tarih</th>
                                                 <th>İşlem Türü</th>
                                                 <th>İşlemi Yapan</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% activities.forEach(activity=> { %>
+                                            <% activities.forEach((activity,index)=> { %>
                                                 <tr class="tr">
+                                                    <td>
+                                                        <%-index+1%>
+                                                    </td>
                                                     <td>
                                                         <%-activity.createdAt%>
                                                     </td>

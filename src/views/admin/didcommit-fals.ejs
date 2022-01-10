@@ -28,6 +28,7 @@
                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                               <thead>
                                  <tr>
+                                    <th>No</th>
                                     <th>Kullanıcı</th>
                                     <th>Yorumlayan</th>
                                     <th>Fotoğraflar</th>
@@ -36,8 +37,11 @@
                                  </tr>
                               </thead>
                               <tbody>
-                                 <% fallar.forEach(fal=> { %>
+                                 <% fallar.forEach((fal,index)=> { %>
                                     <tr class="tr">
+                                       <td>
+                                          <%-index+1%>
+                                       </td>
                                        <td>
                                           <%-fal.u_id%>
                                        </td>

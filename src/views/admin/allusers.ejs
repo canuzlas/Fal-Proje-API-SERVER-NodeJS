@@ -70,13 +70,17 @@
                                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                          <thead>
                                              <tr>
+                                                 <th>No</th>
                                                  <th>Mail</th>
                                                  <th>İşlemler</th>
                                              </tr>
                                          </thead>
                                          <tbody>
-                                             <% bannedusers.forEach(user=> { %>
+                                             <% bannedusers.forEach((user,index)=> { %>
                                                  <tr class="tr">
+                                                    <td>
+                                                        <%-index+1%>
+                                                    </td>
                                                      <td>
                                                          <%-user.mail%>
                                                      </td>

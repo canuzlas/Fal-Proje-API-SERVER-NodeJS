@@ -28,13 +28,17 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
+                                                <th>No</th>
                                                 <th>Üye</th>
                                                 <th>İşlem</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% messages.forEach(msg=> { %>
+                                            <% messages.forEach((msg,index)=> { %>
                                                 <tr>
+                                                    <td>
+                                                        <%-index+1%>
+                                                    </td>
                                                     <td>
                                                         <%-msg%>
                                                     </td>
