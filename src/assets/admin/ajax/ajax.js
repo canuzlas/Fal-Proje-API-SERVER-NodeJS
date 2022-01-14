@@ -84,8 +84,7 @@ $(document).ready(() => {
         })
     })
 
-    $('.deletenotibutton').click(function () {
-
+    $('#dataTable').on('click', '.deletenotibutton', function () {
         $.ajax({
             url: '/staff/admin/deleteNotification',
             method: 'POST',
@@ -99,10 +98,10 @@ $(document).ready(() => {
                 }
             }
         })
-    })
+    });
 
-    $('.deleteuserbutton').click(function () {
 
+    $('#dataTable').on('click', '.deleteuserbutton', function () {
         $.ajax({
             url: '/staff/admin/deleteuser',
             method: 'POST',
@@ -116,10 +115,9 @@ $(document).ready(() => {
                 }
             }
         })
-    })
+    });
 
-    $('.wasCommitButton').click(function () {
-
+    $('#dataTable').on('click', '.wasCommitButton', function () {
         $.ajax({
             url: '/staff/admin/getOneCommit',
             method: 'POST',
@@ -132,8 +130,7 @@ $(document).ready(() => {
                 }
             }
         })
-
-    })
+    });
 
 
     $('.sendfbcmButton').click(function () {
@@ -154,8 +151,7 @@ $(document).ready(() => {
 
     })
 
-    $('.deletefalbutton').click(function () {
-
+    $('#dataTable').on('click', '.deletefalbutton', function () {
         $.ajax({
             url: '/staff/admin/deletefal',
             method: 'POST',
@@ -169,11 +165,9 @@ $(document).ready(() => {
                 }
             }
         })
+    });
 
-    })
-
-    $('.banuserbutton').click(function () {
-
+    $('#dataTable').on('click', '.banuserbutton', function () {
         $.ajax({
             url: '/staff/admin/dobanuser',
             method: 'POST',
@@ -187,10 +181,9 @@ $(document).ready(() => {
                 }
             }
         })
+    });
 
-    })
-    $('.unbanuserbutton').click(function () {
-
+    $('.dataTable2').on('click', '.unbanuserbutton', function () {
         $.ajax({
             url: '/staff/admin/dounbanuser',
             method: 'POST',
@@ -204,10 +197,6 @@ $(document).ready(() => {
                 }
             }
         })
-
-    })
-
-
-
+    });
 
 })

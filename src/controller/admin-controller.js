@@ -6,6 +6,8 @@ const appNotificationModel = require('../models/app-notifications-model')
 const { saveActivity, activityLogModel } = require('../models/activitylog-model')
 const bannedUserModel = require('../models/banneduser-model')
 const fbdatabase = require('../config/firebaseConfig')
+const fs = require('fs')
+const path = require('path');
 
 const md5 = require('md5')
 // ne yorum : { $ne: null }
@@ -125,6 +127,9 @@ const deleteFal = async (req, res) => {
    const result = await falModel.findByIdAndDelete(req.body.id)
    if (result) {
       saveActivity('Fal Yorum Silindi', String(req.session.admin.username))
+      result.photos.map((photo)=>{
+         fs.unlink(path.resolve(__dirname, '../uploads/coffeeFal/' + photo), (err) => err ? console.log(err) : console.log('fotoğraf silindi')) 
+      })
       return res.send({ success: true })
    } else {
       saveActivity('Fal Yorum Silme Hata', String(req.session.admin.username))
@@ -162,9 +167,11 @@ const allUsers = async (req, res) => {
    return res.render('admin/allusers', { layout: 'layout/tables-layout.ejs', users: users, bannedusers: bannedusers, title: 'Tüm Üyeler', admin: req.session.admin })
 }
 const deleteUser = async (req, res) => {
+   console.log(req.body.id)
    const result = await usersModel.findByIdAndDelete(req.body.id)
    if (result) {
       saveActivity('Üye Silindi', String(req.session.admin.username))
+      result.photo != 'false' ? fs.unlink(path.resolve(__dirname, '../uploads/usersPhoto/' + result.photo), (err) => err ? console.log(err) : console.log('fotoğraf silindi')) : null
       return res.send({ success: true })
    } else {
       saveActivity('Üye Silme Hata', String(req.session.admin.username))
