@@ -1,8 +1,8 @@
 const firebase = require('firebase-admin')
-var serviceAccount = require("../config/falhub-6c7a2-firebase-adminsdk-kuv1f-fdf4c6c8de.json");
+var serviceAccount = require("../config/sdk.json");
 const firebaseConfig = {
     credential: firebase.credential.cert(serviceAccount),
-    databaseURL: "https://falhub-6c7a2-default-rtdb.europe-west1.firebasedatabase.app",
+    databaseURL: "*****",
 };
 
 firebase.initializeApp(firebaseConfig);
